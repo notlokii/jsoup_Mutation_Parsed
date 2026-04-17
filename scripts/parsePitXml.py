@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-parse_mutations.py
+parsePitXml.py
 ──────────────────────────────────────────────────────────────────────────────
 Parses a PIT mutations.xml report and produces:
   - reports/mutations.csv    (one row per mutation, all fields)
   - reports/summary.json     (aggregated stats: kill rate, per-mutator counts)
 
 Usage:
-    python scripts/parse_mutations.py
-    python scripts/parse_mutations.py --mutations Test/target/pit-reports/mutations.xml --output reports/
+    python scripts/parsePitXml.py
+    python scripts/parsePitXml.py --mutations Test/jsoup/target/pit-reports/mutations.xml --output reports/
 """
 
 import argparse
@@ -17,55 +17,12 @@ import json
 import xml.etree.ElementTree as ET
 from collections import Counter
 from pathlib import Path
+from utils.paths import DEFAULT_MUTATIONS_XML, resolve_mutations_xml
 
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Parsing
 # ──────────────────────────────────────────────────────────────────────────────
-
-def resolve_mutations_xml(path_hint: str) -> Path:
-    """
-    Resolve the PIT report path.
-    Accept either an explicit file path, a project root, or fall back to a
-    few common report locations used by this jsoup setup.
-    """
-    candidate = Path(path_hint).expanduser()
-    if candidate.is_file():
-        return candidate
-
-    search_roots = []
-    if candidate.exists() and candidate.is_dir():
-        search_roots.append(candidate)
-
-    search_roots.extend([
-        Path.cwd(),
-        Path.cwd() / "target" / "pit-reports",
-    ])
-
-    common_names = [
-        "target/pit-reports/mutations.xml",
-        "pit-reports/mutations.xml",
-        "mutations/mutations.xml",
-    ]
-
-    for root in search_roots:
-        for name in common_names:
-            xml_path = root / name
-            if xml_path.is_file():
-                return xml_path
-
-        matches = sorted(
-            root.glob("**/target/pit-reports/mutations.xml"),
-            key=lambda p: p.stat().st_mtime,
-            reverse=True,
-        )
-        if matches:
-            return matches[0]
-
-    raise FileNotFoundError(
-        f"Could not locate mutations.xml from '{path_hint}'. "
-        "Expected target/pit-reports/mutations.xml or an explicit file path."
-    )
 
 def parse_mutations(xml_path: str) -> list:
     """
@@ -205,8 +162,8 @@ def main():
     )
     parser.add_argument(
         "--mutations",
-        default="Test/target/pit-reports/mutations.xml",
-        help="Path to PIT mutations.xml or project root (default: Test/target/pit-reports/mutations.xml)",
+        default=str(DEFAULT_MUTATIONS_XML),
+        help="Path to PIT mutations.xml or project root (default: Test/jsoup/target/pit-reports/mutations.xml)",
     )
     parser.add_argument(
         "--output",

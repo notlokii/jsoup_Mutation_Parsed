@@ -1,102 +1,70 @@
-# jsoup PIT Mutation Testing
+# jsoup Mutation Parsing Toolkit
 
-This repository packages a Jsoup mutation-testing artifact in the layout requested for the assignment:
+This repository is organized as a compact assignment repo, closer in spirit to [c2nes/javalang](https://github.com/c2nes/javalang): one obvious project directory, one scripts directory, and a single top-level README.
 
-- `Test/` contains the Java project under test
-- `scripts/` contains the Python and shell automation
-- this `README.md` explains how to run everything end to end
-
-## Project Choice
-
-This submission uses **jsoup** from the artifact bundle instead of `lang3`.
-
-## Requirements
-
-- macOS or Linux
-- Java 8 available locally
-- Maven available on `PATH`
-- Python 3
-
-## Repository Layout
+## Layout
 
 ```text
 .
+├── README.md
 ├── Test/
-│   ├── pom.xml
-│   ├── src/
-│   └── evosuite_tests/
-├── scripts/
-│   ├── run_pit.sh
-│   ├── run_pipeline.sh
-│   ├── parse_mutations.py
-│   ├── apply_mutations.py
-│   └── requirements.txt
-└── README.md
+│   └── jsoup/
+│       ├── pom.xml
+│       ├── src/
+│       ├── evosuite_tests/
+│       └── tests_without_assertion/
+└── scripts/
+    ├── mutationApplier.py
+    ├── parsePitXml.py
+    ├── requirements.txt
+    ├── run_pipeline.sh
+    ├── run_pit.sh
+    └── utils/
 ```
 
-## Install Python Dependency
+## What Is Different From `javalang`
+
+This repo is similar in structure, but not identical in purpose. `javalang` is a Python library repo with its package at the root, while this is an assignment repo centered on a Java project plus PIT-processing scripts. The similarity is in the simplified layout and root-level clarity, not the language stack.
+
+## Requirements
+
+- Java 8
+- Maven
+- Python 3
+
+## Install
 
 ```bash
 python3 -m pip install -r scripts/requirements.txt
 ```
 
-## Run PIT Only
-
-From the repository root:
+## Run PIT
 
 ```bash
 ./scripts/run_pit.sh
 ```
 
-What this does:
-
-1. selects Java 8
-2. builds the `Test/` project
-3. runs PIT with the XML settings required by the assignment
-4. copies the generated PIT files to `Test/target/pit-reports/`
-
-Expected outputs:
-
-- `Test/target/pit-reports/mutations.xml`
-- `Test/target/pit-reports/linecoverage.xml`
+This builds `Test/jsoup/` and writes the PIT XML report to `Test/jsoup/target/pit-reports/mutations.xml`.
 
 ## Run The Full Pipeline
-
-From the repository root:
 
 ```bash
 ./scripts/run_pipeline.sh
 ```
 
-This runs:
+This will:
 
-1. PIT mutation testing
-2. XML parsing into CSV and JSON
-3. mutant recreation into source trees
+1. run PIT on the jsoup project
+2. parse the PIT XML into `reports/`
+3. recreate mutated source files in `mutants/`
 
-Expected outputs:
-
-- `Test/target/pit-reports/mutations.xml`
-- `reports/mutations.csv`
-- `reports/summary.json`
-- `mutants/manifest.json`
-- `mutants/mutant_XXXXX/src/main/java/...`
-
-## Manual Commands
-
-If you want to run each step yourself:
+## Run Individual Steps
 
 ```bash
-./scripts/run_pit.sh
-python3 scripts/parse_mutations.py --mutations Test/target/pit-reports/mutations.xml --output reports
-python3 scripts/apply_mutations.py --mutations Test/target/pit-reports/mutations.xml --project Test --output mutants
+python3 scripts/parsePitXml.py --mutations Test/jsoup/target/pit-reports/mutations.xml --output reports
+python3 scripts/mutationApplier.py --mutations Test/jsoup/target/pit-reports/mutations.xml --project Test/jsoup --output mutants
 ```
 
-## Notes On The Mutant Recreator
+## Notes
 
-The mutation recreation script uses `javalang` to parse Java and identify AST nodes before applying a mutation. Because `javalang` does not provide a source-code pretty printer, the final file emission uses AST-guided source edits rather than blind whole-file search-and-replace.
-
-## Important Runtime Note
-
-The PIT run on this artifact is **long-running**. A full run can take a substantial amount of time depending on machine speed. The command should be treated as a batch job rather than a short feedback loop.
-
+The mutation application step uses `javalang` for AST-aware edits instead of blind string replacement. Generated directories such as `reports/`, `mutants/`, and build output are intentionally ignored so the pushed repository stays clean.

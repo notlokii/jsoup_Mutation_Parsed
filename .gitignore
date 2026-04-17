@@ -1,5 +1,5 @@
-Test/target/
-Test/evosuite_tests/target/
+Test/jsoup/target/
+Test/jsoup/evosuite_tests/target/
 reports/
 mutants/
 mutants_smoke/

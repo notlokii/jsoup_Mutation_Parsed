@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-PROJECT_DIR="$ROOT_DIR/Test"
+PROJECT_DIR="$ROOT_DIR/Test/jsoup"
 
 if [[ "$(uname -s)" == "Darwin" && -z "${JAVA_HOME:-}" ]]; then
   JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
@@ -27,10 +27,9 @@ echo "Running PIT mutation coverage..."
 mvn org.pitest:pitest-maven:mutationCoverage -PtestID -Dtest.dir=src -PtargetID -Dtarget.dir=target
 
 if [[ ! -s "$PROJECT_DIR/target/pit-reports/mutations.xml" ]]; then
-  echo "PIT finished without creating Test/target/pit-reports/mutations.xml" >&2
+  echo "PIT finished without creating Test/jsoup/target/pit-reports/mutations.xml" >&2
   exit 1
 fi
 
 echo "PIT report ready at:"
 echo "  $PROJECT_DIR/target/pit-reports/mutations.xml"
-
