@@ -1,0 +1,5 @@
+# Python dependencies for mutation testing scripts
+# Install with:  pip install -r scripts/requirements.txt
+
+# AST parsing for Java source files (required by apply_mutations.py)
+javalang==0.13.0

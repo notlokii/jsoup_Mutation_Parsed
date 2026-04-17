@@ -1,0 +1,9 @@
+Test/target/
+Test/evosuite_tests/target/
+reports/
+mutants/
+mutants_smoke/
+generated/
+__pycache__/
+*.pyc
+.DS_Store
