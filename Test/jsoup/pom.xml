@@ -52,6 +52,12 @@
           <timeoutConstant>8000</timeoutConstant>
           <reportsDirectory>${project.build.directory}/pit-reports</reportsDirectory>
           <timestampedReports>false</timestampedReports>
+          <jvmArgs>
+            <jvmArg>-Xss256k</jvmArg>
+            <jvmArg>-XX:+StartAttachListener</jvmArg>
+            <jvmArg>-Djdk.attach.allowAttachSelf=true</jvmArg>
+            <jvmArg>-Djava.awt.headless=true</jvmArg>
+          </jvmArgs>
           <mutators>
             <mutator>CONDITIONALS_BOUNDARY</mutator>
             <mutator>INCREMENTS</mutator>

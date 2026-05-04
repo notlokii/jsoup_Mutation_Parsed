@@ -7,6 +7,9 @@ This repository is organized as a compact assignment repo, closer in spirit to [
 ```text
 .
 ├── README.md
+├── deliverables/
+│   ├── jsoup_final_report.docx
+│   └── jsoup_final_report.md
 ├── Test/
 │   └── jsoup/
 │       ├── pom.xml
@@ -64,6 +67,13 @@ This will:
 python3 scripts/parsePitXml.py --mutations Test/jsoup/target/pit-reports/mutations.xml --output reports
 python3 scripts/mutationApplier.py --mutations Test/jsoup/target/pit-reports/mutations.xml --project Test/jsoup --output mutants
 ```
+
+## Deliverables
+
+The final written submission files are included in `deliverables/`:
+
+- `deliverables/jsoup_final_report.docx`
+- `deliverables/jsoup_final_report.md`
 
 ## Notes
 
